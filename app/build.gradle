@@ -141,7 +141,7 @@ afterEvaluate {
 
 dependencies {
 /** Desugaring **/
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
 
 /** Ktlint **/
     ktlint "com.pinterest:ktlint:0.40.0"
@@ -172,7 +172,7 @@ dependencies {
     // name and the commit hash with the commit hash of the (pushed) commit you want to test
     // This works thanks to JitPack: https://jitpack.io/
     implementation 'com.github.TeamNewPipe:nanojson:1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751'
-    implementation 'com.github.ShareASmile.NewPipeExtractor:NewPipeExtractor:v0.22.7.6'
+    implementation 'com.github.whistlingwoods.NewPipeExtractor:NewPipeExtractor:20c09af6fff5dea'
 
 /** Third-party libraries **/
     // Instance state boilerplate elimination
