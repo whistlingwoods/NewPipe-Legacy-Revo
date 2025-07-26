@@ -4,15 +4,15 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '30.0.3'
+    compileSdk 31
+    namespace 'org.schabi.newpipelegacy'
 
     defaultConfig {
         applicationId 'org.schabi.newpipelegacy'
         resValue "string", "app_name", "NewPipe Legacy"
-        minSdkVersion 16
-		//noinspection ExpiredTargetSdkVersion
-        targetSdkVersion 29
+        minSdk 16
+        //noinspection ExpiredTargetSdk
+        targetSdk 29
         versionCode 114
         versionName "0.19.9.8"
 
@@ -64,7 +64,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
@@ -119,7 +119,7 @@ def inputFiles = project.fileTree(dir: "src", include: "**/*.kt")
 task runKtlint(type: JavaExec) {
     inputs.files(inputFiles)
     outputs.dir(outputDir)
-    main = "com.pinterest.ktlint.Main"
+    getMainClass().set("com.pinterest.ktlint.Main")
     classpath = configurations.ktlint
     args "src/**/*.kt"
 }
@@ -127,7 +127,7 @@ task runKtlint(type: JavaExec) {
 task formatKtlint(type: JavaExec) {
     inputs.files(inputFiles)
     outputs.dir(outputDir)
-    main = "com.pinterest.ktlint.Main"
+    getMainClass().set("com.pinterest.ktlint.Main")
     classpath = configurations.ktlint
     args "-F", "src/**/*.kt"
 }
@@ -141,7 +141,7 @@ afterEvaluate {
 
 dependencies {
 /** Desugaring **/
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.6'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs_nio:2.0.4'
 
 /** Ktlint **/
     ktlint "com.pinterest:ktlint:0.40.0"
@@ -172,7 +172,7 @@ dependencies {
     // name and the commit hash with the commit hash of the (pushed) commit you want to test
     // This works thanks to JitPack: https://jitpack.io/
     implementation 'com.github.TeamNewPipe:nanojson:1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751'
-    implementation 'com.github.whistlingwoods.NewPipeExtractor:NewPipeExtractor:20c09af6fff5dea'
+    implementation 'com.github.whistlingwoods.NewPipeExtractor:NewPipeExtractor:4fb87a4da08a'
 
 /** Third-party libraries **/
     // Instance state boilerplate elimination

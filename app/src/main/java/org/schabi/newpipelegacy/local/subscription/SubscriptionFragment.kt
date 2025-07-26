@@ -106,6 +106,7 @@ class SubscriptionFragment : BaseStateFragment<SubscriptionState>() {
         setupInitialLayout()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (activity != null && isVisibleToUser) {

@@ -99,6 +99,7 @@ class FeedFragment : BaseListFragment<FeedState, Unit>() {
         updateRelativeTimeViews()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 

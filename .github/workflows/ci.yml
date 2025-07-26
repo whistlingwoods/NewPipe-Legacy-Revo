@@ -4,11 +4,7 @@ on:
   workflow_dispatch:
   pull_request:
     branches:
-      - dev
-      - develop
-      - revo
-      - toss
-      - legacy-4.0
+      - '**'
     paths-ignore:
       - 'README.md'
       - 'fastlane/**'
@@ -18,11 +14,7 @@ on:
       - '.github/ISSUE_TEMPLATE/**'
   push:
     branches:
-      - dev
-      - develop
-      - revo
-      - toss
-      - legacy-4.0
+      - '**'
     paths-ignore:
       - 'README.md'
       - 'fastlane/**'
