@@ -1,0 +1,4 @@
+[submodule "NewPipeExtractor"]
+	path = NewPipeExtractor
+	url = https://github.com/MoreVista/NewPipeExtractor.git
+	branch = revo-fixes

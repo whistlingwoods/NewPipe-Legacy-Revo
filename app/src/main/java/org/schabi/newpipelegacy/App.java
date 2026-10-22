@@ -23,6 +23,7 @@ import org.acra.config.CoreConfigurationBuilder;
 import org.acra.sender.ReportSenderFactory;
 import org.schabi.newpipe.extractor.NewPipe;
 import org.schabi.newpipe.extractor.downloader.Downloader;
+import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
 import org.schabi.newpipelegacy.report.AcraReportSenderFactory;
 import org.schabi.newpipelegacy.report.ErrorActivity;
 import org.schabi.newpipelegacy.report.UserAction;
@@ -91,6 +92,7 @@ public class App extends MultiDexApplication {
                 Localization.getPreferredLocalization(this),
                 Localization.getPreferredContentCountry(this));
         Localization.init(getApplicationContext());
+        applyAdaptiveFormatsSetting(this);
 
         StateSaver.init(this);
         initNotificationChannel();
@@ -110,6 +112,16 @@ public class App extends MultiDexApplication {
         DownloaderImpl downloader = DownloaderImpl.init(null);
         setCookiesToDownloader(downloader);
         return downloader;
+    }
+
+    /**
+     * Tell the extractor whether to offer the adaptive resolutions. Called at startup and again
+     * whenever the preference changes.
+     */
+    public static void applyAdaptiveFormatsSetting(final Context context) {
+        YoutubeStreamExtractor.setFetchAdaptiveFormats(
+                PreferenceManager.getDefaultSharedPreferences(context).getBoolean(
+                        context.getString(R.string.fetch_adaptive_formats_key), true));
     }
 
     protected void setCookiesToDownloader(final DownloaderImpl downloader) {

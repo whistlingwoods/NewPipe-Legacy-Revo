@@ -1,11 +1,11 @@
 include ':app'
 
-// Use a local copy of NewPipe Extractor by uncommenting the lines below.
-// We assume, that NewPipe and NewPipe Extractor have the same parent directory.
-// If this is not the case, please change the path in includeBuild().
-
-//includeBuild('../NewPipeExtractor') {
-//    dependencySubstitution {
-//        substitute module('com.github.TeamNewPipe:NewPipeExtractor') with project(':extractor')
-//    }
-//}
+// NewPipe Extractor is a submodule (./NewPipeExtractor) rather than a JitPack dependency: JitPack
+// stopped serving the published artifacts, and the fixes needed to keep YouTube working have to be
+// maintained here anyway. The same submodule is shared with the legacy-4.0 branch.
+// Run `git submodule update --init` after cloning.
+includeBuild('NewPipeExtractor') {
+    dependencySubstitution {
+        substitute module('com.github.ShareASmile.NewPipeExtractor:NewPipeExtractor') with project(':extractor')
+    }
+}
