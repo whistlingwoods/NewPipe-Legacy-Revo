@@ -4,8 +4,8 @@ include ':app'
 // stopped serving the published artifacts, and the fixes needed to keep YouTube working have to be
 // maintained here anyway. The same submodule is shared with the legacy-4.0 branch.
 // Run `git submodule update --init` after cloning.
-includeBuild('NewPipeExtractor') {
-    dependencySubstitution {
-        substitute module('com.github.ShareASmile.NewPipeExtractor:NewPipeExtractor') with project(':extractor')
-    }
-}
+//includeBuild('../NewPipeExtractor') {
+//    dependencySubstitution {
+//        substitute module('com.github.whistlingwoods.NewPipeExtractor:NewPipeExtractor') with project(':extractor')
+//    }
+//}
