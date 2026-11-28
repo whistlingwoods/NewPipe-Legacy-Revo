@@ -196,10 +196,10 @@ dependencies {
     // name and the commit hash with the commit hash of the (pushed) commit you want to test
     // This works thanks to JitPack: https://jitpack.io/
     implementation 'com.github.TeamNewPipe:nanojson:1d9e1aea9049fc9f85e68b43ba39fe7be1c1f751'
-    // Substituted by settings.gradle with the vendored ./NewPipeExtractor build (v0.22.7.6 + the
+    // Revert Substitution by settings.gradle with the vendored ./NewPipeExtractor build (v0.22.7.6 + the
     // YouTube fixes), because v0.22.5.3 fetched streams through the WEB client, which YouTube now
     // gates behind a poToken.
-    implementation 'com.github.ShareASmile:NewPipeExtractor:v0.22.5.3'
+    implementation 'com.github.whistlingwoods.NewPipeExtractor:NewPipeExtractor:8a0306a96a'
 
     implementation "org.jsoup:jsoup:1.13.1"
 
