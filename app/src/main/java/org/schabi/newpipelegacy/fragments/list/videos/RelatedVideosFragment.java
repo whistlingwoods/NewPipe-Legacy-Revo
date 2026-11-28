@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import org.schabi.newpipe.extractor.ListExtractor;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipelegacy.util.ServiceHelper;
 import org.schabi.newpipe.extractor.stream.StreamInfo;
 import org.schabi.newpipelegacy.fragments.list.BaseListInfoFragment;
 import org.schabi.newpipelegacy.report.UserAction;
@@ -137,7 +138,7 @@ public class RelatedVideosFragment extends BaseListInfoFragment<RelatedStreamInf
 
         if (!result.getErrors().isEmpty()) {
             showSnackBarError(result.getErrors(), UserAction.REQUESTED_STREAM,
-                    NewPipe.getNameOfService(result.getServiceId()), result.getUrl(), 0);
+                    ServiceHelper.getNameOfServiceById(result.getServiceId()), result.getUrl(), 0);
         }
 
         if (disposables != null) {
@@ -152,7 +153,7 @@ public class RelatedVideosFragment extends BaseListInfoFragment<RelatedStreamInf
         if (!result.getErrors().isEmpty()) {
             showSnackBarError(result.getErrors(),
                     UserAction.REQUESTED_STREAM,
-                    NewPipe.getNameOfService(serviceId),
+                    ServiceHelper.getNameOfServiceById(serviceId),
                     "Get next page of: " + url,
                     R.string.general_error);
         }
@@ -170,7 +171,7 @@ public class RelatedVideosFragment extends BaseListInfoFragment<RelatedStreamInf
 
         hideLoading();
         showSnackBarError(exception, UserAction.REQUESTED_STREAM,
-                NewPipe.getNameOfService(serviceId), url, R.string.general_error);
+                ServiceHelper.getNameOfServiceById(serviceId), url, R.string.general_error);
         return true;
     }
 

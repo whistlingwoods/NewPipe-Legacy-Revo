@@ -50,6 +50,7 @@ import org.schabi.newpipelegacy.ReCaptchaActivity;
 import org.schabi.newpipelegacy.download.DownloadDialog;
 import org.schabi.newpipe.extractor.InfoItem;
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipelegacy.util.ServiceHelper;
 import org.schabi.newpipe.extractor.ServiceList;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
 import org.schabi.newpipe.extractor.services.youtube.extractors.YoutubeStreamExtractor;
@@ -553,7 +554,7 @@ public class VideoDetailFragment
     private void initThumbnailViews(@NonNull StreamInfo info) {
         thumbnailImageView.setImageResource(R.drawable.dummy_thumbnail_dark);
         if (!TextUtils.isEmpty(info.getThumbnailUrl())) {
-            final String infoServiceName = NewPipe.getNameOfService(info.getServiceId());
+            final String infoServiceName = ServiceHelper.getNameOfServiceById(info.getServiceId());
             final ImageLoadingListener onFailListener = new SimpleImageLoadingListener() {
                 @Override
                 public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
@@ -1215,7 +1216,7 @@ public class VideoDetailFragment
         if (!info.getErrors().isEmpty()) {
             showSnackBarError(info.getErrors(),
                     UserAction.REQUESTED_STREAM,
-                    NewPipe.getNameOfService(info.getServiceId()),
+                    ServiceHelper.getNameOfServiceById(info.getServiceId()),
                     info.getUrl(),
                     0);
         }
@@ -1287,7 +1288,7 @@ public class VideoDetailFragment
                 : R.string.general_error;
 
         onUnrecoverableError(exception, UserAction.REQUESTED_STREAM,
-                NewPipe.getNameOfService(serviceId), url, errorId);
+                ServiceHelper.getNameOfServiceById(serviceId), url, errorId);
 
         return true;
     }

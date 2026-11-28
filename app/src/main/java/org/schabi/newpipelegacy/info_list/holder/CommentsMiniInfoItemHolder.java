@@ -98,7 +98,12 @@ public class CommentsMiniInfoItemHolder extends InfoItemHolder {
         streamUrl = item.getUrl();
 
         itemContentView.setLines(COMMENT_DEFAULT_LINES);
-        commentText = item.getCommentText();
+        // getCommentText() returns a Description since NewPipeExtractor 0.22.6, and its content
+        // may carry the HTML markup the WEB client sends.
+        commentText = item.getCommentText().getContent().replace("&nbsp;", "")
+                .replace("<a href=", "").replace("</a>", " ")
+                .replace("<br>", " ").replace("<b>", " ")
+                .replace("</br>", " ").replace("</b>", " ");
         itemContentView.setText(commentText);
         itemContentView.setOnTouchListener(CommentTextOnTouchListener.INSTANCE);
 

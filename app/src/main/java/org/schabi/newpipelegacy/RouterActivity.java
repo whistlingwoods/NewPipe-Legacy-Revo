@@ -102,6 +102,8 @@ public class RouterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        android.util.Log.i("RouterActivityDbg", "onCreate " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this));
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
 
@@ -128,13 +130,45 @@ public class RouterActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        android.util.Log.i("RouterActivityDbg", "onStart " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this));
         super.onStart();
 
         handleUrl(currentUrl);
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        android.util.Log.i("RouterActivityDbg", "onResume " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this));
+    }
+
+    @Override
+    public void onWindowFocusChanged(final boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        android.util.Log.i("RouterActivityDbg", "onWindowFocusChanged " + hasFocus + " "
+                + System.currentTimeMillis());
+    }
+
+    @Override
+    protected void onPause() {
+        android.util.Log.i("RouterActivityDbg", "onPause " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this) + " isFinishing=" + isFinishing());
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        android.util.Log.i("RouterActivityDbg", "onStop " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this) + " isFinishing=" + isFinishing());
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
+        android.util.Log.i("RouterActivityDbg", "onDestroy " + System.currentTimeMillis()
+                + " hash=" + System.identityHashCode(this) + " isFinishing=" + isFinishing());
         super.onDestroy();
 
         disposables.clear();
@@ -254,6 +288,16 @@ public class RouterActivity extends AppCompatActivity {
     }
 
     private void showDialog(final List<AdapterChoiceItem> choices) {
+        android.util.Log.i("RouterActivityDbg", "showDialog entered "
+                + System.currentTimeMillis() + " hash=" + System.identityHashCode(this)
+                + " isFinishing=" + isFinishing());
+        // handleUrl() dispatches back to the main thread from a background subscription, so by
+        // the time this runs the Activity may already be on its way out (e.g. the user backed
+        // out, or the OS reclaimed it). Showing a Dialog on a dead Activity throws.
+        if (isFinishing()) {
+            return;
+        }
+
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final Context themeWrapperContext = getThemeWrapperContext();
 
@@ -282,7 +326,12 @@ public class RouterActivity extends AppCompatActivity {
                 .setCancelable(true)
                 .setNegativeButton(R.string.just_once, dialogButtonsClickListener)
                 .setPositiveButton(R.string.always, dialogButtonsClickListener)
+                .setOnCancelListener((dialog) -> android.util.Log.i("RouterActivityDbg",
+                        "dialog onCancel " + System.currentTimeMillis()))
                 .setOnDismissListener((dialog) -> {
+                    android.util.Log.i("RouterActivityDbg", "dialog onDismiss "
+                            + System.currentTimeMillis() + " selectionIsDownload="
+                            + selectionIsDownload);
                     if (!selectionIsDownload) {
                         finish();
                     }
@@ -345,6 +394,10 @@ public class RouterActivity extends AppCompatActivity {
             ((RadioButton) radioGroup.getChildAt(selectedRadioPosition)).setChecked(true);
         }
         selectedPreviously = selectedRadioPosition;
+
+        alertDialog.getWindow().setFlags(
+                android.view.WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
+                android.view.WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
         alertDialog.show();
 

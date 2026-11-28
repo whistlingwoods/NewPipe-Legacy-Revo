@@ -13,6 +13,7 @@ import org.schabi.newpipelegacy.database.stream.model.StreamStateEntity;
 import androidx.core.content.ContextCompat;
 
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipelegacy.util.ServiceHelper;
 import org.schabi.newpipelegacy.local.LocalItemBuilder;
 import org.schabi.newpipelegacy.local.history.HistoryRecordManager;
 import org.schabi.newpipelegacy.util.AnimationUtils;
@@ -61,7 +62,7 @@ public class LocalPlaylistStreamItemHolder extends LocalItemHolder {
         itemVideoTitleView.setText(item.getStreamEntity().getTitle());
         itemAdditionalDetailsView.setText(Localization
                 .concatenateStrings(item.getStreamEntity().getUploader(),
-                        NewPipe.getNameOfService(item.getStreamEntity().getServiceId())));
+                        ServiceHelper.getNameOfServiceById(item.getStreamEntity().getServiceId())));
 
         if (item.getStreamEntity().getDuration() > 0) {
             itemDurationView.setText(Localization

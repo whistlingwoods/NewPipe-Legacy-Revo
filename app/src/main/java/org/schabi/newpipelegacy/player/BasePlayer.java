@@ -259,6 +259,9 @@ public abstract class BasePlayer implements
 
             int streamIndex;
             String streamUrl;
+            // Set when the picked video stream carries no audio track of its own, so that the
+            // audio has to be pulled in separately below.
+            String audioSlaveUrl = null;
 
             if (stream.getStreamType() == StreamType.LIVE_STREAM || stream.getStreamType() == StreamType.AUDIO_LIVE_STREAM) {
                 streamUrl = stream.getHlsUrl().isEmpty() ? stream.getDashMpdUrl() : stream.getHlsUrl();
@@ -266,19 +269,51 @@ public abstract class BasePlayer implements
                     && stream.getVideoOnlyStreams().isEmpty()) {
                 streamUrl = stream.getAudioStreams().get(0).getUrl();
             } else {
+                // YouTube only hands out adaptive (video-only + audio-only) formats through the
+                // iOS client, so the muxed list alone is usually empty. Resolve against the very
+                // same merged and sorted list the detail screen builds its quality spinner from,
+                // otherwise the resolution that screen passes in here cannot be found.
+                List<VideoStream> videoStreams = ListHelper.getSortedStreamVideosList(
+                        context, stream.getVideoStreams(), stream.getVideoOnlyStreams(), false);
+                if (videoStreams.isEmpty()) {
+                    // The user's format/resolution preferences filtered everything out.
+                    videoStreams = stream.getVideoStreams().isEmpty()
+                            ? stream.getVideoOnlyStreams() : stream.getVideoStreams();
+                }
+
                 if (playbackQuality.isEmpty()) {
-                    streamIndex = ListHelper.getDefaultResolutionIndex(context, stream.getVideoStreams());
-                    streamUrl = stream.getVideoStreams().get(streamIndex).getUrl();
-                    playbackQuality = stream.getVideoStreams().get(streamIndex).getResolution();
+                    streamIndex = ListHelper.getDefaultResolutionIndex(context, videoStreams);
                 } else {
-                    streamIndex = ListHelper.getResolutionIndex(context, stream.getVideoStreams(), playbackQuality);
-                    streamUrl = stream.getVideoStreams().get(streamIndex).getUrl();
+                    streamIndex = ListHelper.getResolutionIndex(context, videoStreams, playbackQuality);
+                }
+                // Both helpers answer -1 when the requested quality is not on offer.
+                if (streamIndex < 0 || streamIndex >= videoStreams.size()) {
+                    streamIndex = ListHelper.getDefaultResolutionIndex(context, videoStreams);
+                }
+                if (streamIndex < 0 || streamIndex >= videoStreams.size()) {
+                    streamIndex = 0;
+                }
+
+                final VideoStream selectedStream = videoStreams.get(streamIndex);
+                streamUrl = selectedStream.getUrl();
+                playbackQuality = selectedStream.getResolution();
+
+                if (selectedStream.isVideoOnly() && !stream.getAudioStreams().isEmpty()) {
+                    int audioIndex = ListHelper.getDefaultAudioFormat(context, stream.getAudioStreams());
+                    if (audioIndex < 0 || audioIndex >= stream.getAudioStreams().size()) {
+                        audioIndex = 0;
+                    }
+                    audioSlaveUrl = stream.getAudioStreams().get(audioIndex).getUrl();
                 }
             }
 
-            Log.d(TAG, "playbackQuality: " + playbackQuality);
+            Log.d(TAG, "playbackQuality: " + playbackQuality
+                    + ", separate audio track: " + (audioSlaveUrl != null));
 
             Media media = new Media(mLibVLC, Uri.parse(streamUrl));
+            if (audioSlaveUrl != null) {
+                media.addSlave(new Media.Slave(Media.Slave.Type.Audio, 1, audioSlaveUrl));
+            }
             mMediaPlayer.setMedia(media);
 
             String userPreferredLanguage = PreferenceManager.getDefaultSharedPreferences(context)

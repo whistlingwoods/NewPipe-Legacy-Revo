@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import com.grack.nanojson.JsonObject;
@@ -135,8 +136,19 @@ public final class ServiceHelper {
         setSelectedServicePreferences(context, serviceName);
     }
 
-    public static void setSelectedServiceId(final Context context, final String serviceName) {
-        int serviceId = NewPipe.getIdOfService(serviceName);
+    @NonNull
+    public static String getNameOfServiceById(final int serviceId) {
+        for (final StreamingService service : ServiceList.all()) {
+            if (service.getServiceId() == serviceId) {
+                return service.getServiceInfo().getName();
+            }
+        }
+        return "<unknown>";
+    }
+
+    public static void setSelectedServiceId(final Context context, final String serviceName)
+            throws ExtractionException {
+        int serviceId = NewPipe.getService(serviceName).getServiceId();
         if (serviceId == -1) {
             setSelectedServicePreferences(context,
                     DEFAULT_FALLBACK_SERVICE.getServiceInfo().getName());

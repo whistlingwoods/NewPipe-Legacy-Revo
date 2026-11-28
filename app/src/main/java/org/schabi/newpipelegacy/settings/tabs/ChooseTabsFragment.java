@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.schabi.newpipe.extractor.NewPipe;
+import org.schabi.newpipelegacy.util.ServiceHelper;
 import org.schabi.newpipelegacy.report.ErrorActivity;
 import org.schabi.newpipelegacy.report.UserAction;
 import org.schabi.newpipelegacy.settings.SelectChannelFragment;
@@ -386,11 +387,11 @@ public class ChooseTabsFragment extends Fragment {
                         tabName = getString(R.string.default_kiosk_page_summary);
                         break;
                     case KIOSK:
-                        tabName = NewPipe.getNameOfService(((Tab.KioskTab) tab)
+                        tabName = ServiceHelper.getNameOfServiceById(((Tab.KioskTab) tab)
                                 .getKioskServiceId()) + "/" + tab.getTabName(requireContext());
                         break;
                     case CHANNEL:
-                        tabName = NewPipe.getNameOfService(((Tab.ChannelTab) tab)
+                        tabName = ServiceHelper.getNameOfServiceById(((Tab.ChannelTab) tab)
                                 .getChannelServiceId()) + "/" + tab.getTabName(requireContext());
                         break;
                     default:

@@ -125,8 +125,45 @@ public final class ListHelper {
         MediaFormat defaultFormat = getDefaultFormat(context, R.string.default_video_format_key,
                 R.string.default_video_format_value);
 
-        return getSortedStreamVideosList(defaultFormat, showHigherResolutions, videoStreams,
-                videoOnlyStreams, ascendingOrder);
+        return getSortedStreamVideosList(defaultFormat, showHigherResolutions,
+                dropCodecsLibvlcCannotPlay(videoStreams), dropCodecsLibvlcCannotPlay(videoOnlyStreams),
+                ascendingOrder);
+    }
+
+    /**
+     * Drop codecs libvlc 3.0.13 has no decoder for on this build, so a resolution that would
+     * otherwise silently fail to select a track never gets offered.
+     *
+     * <p>
+     * There is no API on API 14/15 (android.media.MediaCodecList needs API 16) and libvlc's own
+     * Java API exposes no per-codec capability query either, so this is a fixed blacklist rather
+     * than a real capability check. Confirmed on a real device: an AV1 stream (itag 398,
+     * "av01.0.05M.08") logs libvlc's mp4 demuxer saying "no track selected, exiting" for both a
+     * video-only and combined attempt, immediately ending playback.
+     * </p>
+     *
+     * <p>
+     * A stream whose codec string doesn't match anything known is kept: the point is to drop
+     * streams we have positive evidence are unplayable, not to guess at ones that might be fine.
+     * </p>
+     */
+    private static List<VideoStream> dropCodecsLibvlcCannotPlay(
+            @Nullable final List<VideoStream> streams) {
+        if (streams == null) {
+            return Collections.emptyList();
+        }
+
+        final List<VideoStream> playable = new ArrayList<>();
+        for (final VideoStream stream : streams) {
+            final String codec = stream.getCodec();
+            final boolean unsupported = codec != null
+                    && (codec.startsWith("av01") || codec.startsWith("vp09")
+                        || codec.startsWith("vp9"));
+            if (!unsupported) {
+                playable.add(stream);
+            }
+        }
+        return playable;
     }
 
     /*//////////////////////////////////////////////////////////////////////////

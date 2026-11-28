@@ -1,1 +1,11 @@
 include ':app'
+
+// NewPipe Extractor is a submodule (./NewPipeExtractor) rather than a JitPack dependency: JitPack
+// stopped serving the published artifacts, and the fixes needed to keep YouTube working have to be
+// maintained here anyway. The same submodule is shared with the revo branch.
+// Run `git submodule update --init` after cloning.
+includeBuild('NewPipeExtractor') {
+    dependencySubstitution {
+        substitute module('com.github.ShareASmile:NewPipeExtractor') with project(':extractor')
+    }
+}
